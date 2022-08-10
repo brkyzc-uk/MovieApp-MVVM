@@ -42,10 +42,12 @@ public class MovieModel {
     var title: String?
     var imageUrl: String?
     var releaseDate: String?
+    var voteAverage: Double?
     
-    public init(title: String?, imageUrl: String?, releaseDate: String?) {
+    public init(title: String?, imageUrl: String?, releaseDate: String?, voteAverage: Double?) {
         self.title = title
         self.imageUrl = imageUrl
         self.releaseDate = releaseDate
+        self.voteAverage = voteAverage
     }
 }

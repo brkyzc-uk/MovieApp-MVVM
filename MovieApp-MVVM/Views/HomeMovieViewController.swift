@@ -7,6 +7,7 @@
 
 import UIKit
 import SDWebImage
+import SwiftUI
 
 class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HomeMovieViewModelDelegate {
    
@@ -40,20 +41,25 @@ class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func setup() {
-        navigationItem.title = "Movies"
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red]
+        navigationItem.title = "Movies App"
+        
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red, NSAttributedString.Key.font: UIFont(name: "Futura Bold", size: 30)!]
+        navigationController?.navigationBar.backgroundColor = .clear
         view.addSubview(movieTableView)
         view.addSubview(loaderActivtyIndicatorView)
         loaderActivtyIndicatorView.startAnimating()
-        print("setup called")
+        //print("setup called")
         setupConstraints()
         
     }
+    
+    
     
     func getCellData(with movieList: MovieModel, cell: HomeMovieTableViewCell) {
         cell.movieNameLabel.text = movieList.title
         cell.movieImageView.sd_setImage(with: URL(string: movieList.imageUrl ??  "" ))
         cell.movieReleaseDateLabel.text = "Release Date: \(movieList.releaseDate ?? "")"
+        cell.movieVoteAvarageLabel.text = "Rate: \(movieList.voteAverage ?? 0.0)"
     }
     
     func setMovieList(_ movieList: [MovieModel]) {
@@ -95,6 +101,13 @@ class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableVie
         return 150
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let movieDetailViewController = MovieDetailViewController()
+        let movieDetailViewModel = MovieDetailViewModel(movieResults: homeMovieViewModel.movieResults[indexPath.row])
+        movieDetailViewController.moviDetailViewModel = movieDetailViewModel
+        navigationController?.pushViewController(movieDetailViewController, animated: true)
+    }
+    
    
     
 
@@ -127,5 +140,7 @@ class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableVie
             ])
         }
     }
+    
+    
 
 }

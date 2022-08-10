@@ -20,19 +20,27 @@ class HomeMovieTableViewCell: UITableViewCell {
     lazy var movieNameLabel: BaseLabelComponent = {
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.font = UIFont.systemFont(ofSize: 26)
-        baseLabelComponent.textColor = UIColor.red
+        baseLabelComponent.textColor = UIColor.white
         return baseLabelComponent
     }()
     
     lazy var movieReleaseDateLabel: BaseLabelComponent = {
-        let baseLabelComponent  = BaseLabelComponent()
+        let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.font = UIFont.systemFont(ofSize: 14)
+        baseLabelComponent.textColor = UIColor.lightGray
+        return baseLabelComponent
+    }()
+    
+    lazy var movieVoteAvarageLabel: BaseLabelComponent = {
+       let baseLabelComponent = BaseLabelComponent()
+        baseLabelComponent.font = UIFont.systemFont(ofSize: 20)
+        baseLabelComponent.textColor = UIColor.yellow
         return baseLabelComponent
     }()
     
     lazy var labelStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [movieNameLabel, movieReleaseDateLabel])
-        stackView.spacing = 26
+        let stackView = UIStackView(arrangedSubviews: [movieNameLabel, movieVoteAvarageLabel, movieReleaseDateLabel])
+        stackView.spacing = 15
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .fill
         stackView.distribution = .fill
@@ -58,7 +66,7 @@ class HomeMovieTableViewCell: UITableViewCell {
     }
     
     func configureCell() {
-        backgroundColor = .cyan
+        backgroundColor = .clear
         selectionStyle = .none
         movieImageView.sd_imageIndicator = SDWebImageActivityIndicator.grayLarge
     }
