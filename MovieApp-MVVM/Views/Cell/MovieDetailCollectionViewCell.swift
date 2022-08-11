@@ -20,9 +20,16 @@ class MovieDetailCollectionViewCell: UICollectionViewCell {
     lazy var castLabel: BaseLabelComponent = {
         
         let label = BaseLabelComponent()
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .cyan
+        label.font = UIFont.boldSystemFont(ofSize: 16.0)
+        label.textColor = .white
         label.textAlignment = .center
+        return label
+    }()
+    
+    lazy var castCharacterLabel: BaseLabelComponent = {
+        let label = BaseLabelComponent()
+        label.font = UIFont.systemFont(ofSize: 14.0)
+        label.textColor = .lightGray
         return label
     }()
     
@@ -38,6 +45,7 @@ class MovieDetailCollectionViewCell: UICollectionViewCell {
     func setUp() {
         addSubview(castImageView)
         addSubview(castLabel)
+        addSubview(castCharacterLabel)
         setupConstraints()
     }
     
@@ -49,8 +57,12 @@ class MovieDetailCollectionViewCell: UICollectionViewCell {
                castImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
                
                castLabel.topAnchor.constraint(equalTo: castImageView.bottomAnchor, constant: 10),
-               castLabel.widthAnchor.constraint(equalToConstant: 75),
+               castLabel.widthAnchor.constraint(equalToConstant: 100),
                castLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+               
+               castCharacterLabel.topAnchor.constraint(equalTo: castLabel.bottomAnchor, constant: 5),
+               castCharacterLabel.widthAnchor.constraint(equalToConstant: 100),
+               castCharacterLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
            ])
        }
     

@@ -22,7 +22,8 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.textAlignment = .center
-        baseLabelComponent.font = UIFont.systemFont(ofSize: 24)
+        baseLabelComponent.font = UIFont.boldSystemFont(ofSize: 26)
+        baseLabelComponent.textColor = UIColor.white
         return baseLabelComponent
     }()
     
@@ -37,6 +38,8 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.textAlignment = .center
+        baseLabelComponent.font = UIFont.boldSystemFont(ofSize: 20)
+        baseLabelComponent.textColor = UIColor.yellow
         return baseLabelComponent
     }()
     
@@ -82,8 +85,21 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         // Do any additional setup after loading the view.
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        resizeScroll()
+    }
+    
+    func resizeScroll() {
+        let height = titleLabel.frame.size.height + ratingLabel.frame.size.height + releaseDateLabel.frame.size.height + summaryLabel.frame.size.height + 300
+        mainScrollView.contentSize = CGSize(width: view.frame.size.width, height: height)
+    }
+    
     func setUp() {
-        navigationItem.title = titleLabel.text
+        navigationItem.title = "Movie Detail"
         moviDetailViewModel?.delegate = self
         mainScrollView.addSubview(titleLabel)
         mainScrollView.addSubview(coverImageView)
@@ -118,10 +134,10 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     // check cast have profile photo
     func checkImageUrl(path: CastDetailModel) {
         if path.profilePath != nil {
-            let model = CastModel(name: path.name, imagePath: API.movieImageUrl.rawValue + (path.profilePath ?? ""))
+            let model = CastModel(name: path.name, imagePath: API.movieImageUrl.rawValue + (path.profilePath ?? ""), character: path.character)
             moviDetailViewModel?.castList.append(model)
         } else {
-            let model = CastModel(name: path.name ?? "", imagePath: nil)
+            let model = CastModel(name: path.name ?? "", imagePath: nil, character: path.character ?? "")
             moviDetailViewModel?.castList.append(model)
         }
     }
@@ -167,6 +183,7 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
                 cell.castImageView.image = UIImage(named: "placeholder")
             }
             cell.castLabel.text = moviDetailViewModel?.castList[indexPath.item].name
+            cell.castCharacterLabel.text = moviDetailViewModel?.castList[indexPath.item].character
             return cell
         } else {
             return UICollectionViewCell()
@@ -188,6 +205,16 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 150, height:  200)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let viewController = CastDetailViewController()
+        if let model = moviDetailViewModel?.castDetailList[indexPath.row] {
+            let viewModel = CastDetailViewModel(castDetailModel: model)
+            viewController.castDetailViewModel = viewModel
+        }
+        navigationController?.pushViewController(viewController, animated: true)
+        
     }
     
     func setupConstraints() {
@@ -212,7 +239,7 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
              summaryLabel.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
              
              castCollectionView.topAnchor.constraint(equalTo: summaryLabel.bottomAnchor, constant: 5),
-             castCollectionView.heightAnchor.constraint(equalToConstant: 200),
+             castCollectionView.heightAnchor.constraint(equalToConstant: 250),
              castCollectionView.widthAnchor.constraint(equalToConstant: view.frame.width),
              castCollectionView.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
              

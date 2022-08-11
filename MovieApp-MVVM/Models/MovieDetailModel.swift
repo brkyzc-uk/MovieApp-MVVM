@@ -34,8 +34,10 @@ class CastModel {
     
     var name: String?
     var imagePath: String?
-    init(name: String?, imagePath: String?) {
+    var character: String?
+    init(name: String?, imagePath: String?, character: String?) {
         self.name = name
         self.imagePath = imagePath
+        self.character = character
     }
 }
