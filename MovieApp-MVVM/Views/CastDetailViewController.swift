@@ -12,7 +12,7 @@ class CastDetailViewController: UIViewController {
     
     lazy var castImageView: BaseImageViewComponent = {
         
-        let imageView = BaseImageViewComponent(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+        let imageView = BaseImageViewComponent(frame: CGRect(x: 0, y: 0, width: 250, height: 250))
         return imageView
     }()
     
@@ -22,6 +22,7 @@ class CastDetailViewController: UIViewController {
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.font = UIFont.boldSystemFont(ofSize: 26)
         baseLabelComponent.textAlignment = .center
+        baseLabelComponent.textColor = UIColor.white
         return baseLabelComponent
     }()
     
@@ -30,6 +31,7 @@ class CastDetailViewController: UIViewController {
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.font = UIFont.systemFont(ofSize: 20)
         baseLabelComponent.textAlignment = .center
+        baseLabelComponent.textColor = UIColor.white
         return baseLabelComponent
     }()
     
@@ -38,6 +40,7 @@ class CastDetailViewController: UIViewController {
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.font = UIFont.systemFont(ofSize: 20)
         baseLabelComponent.textAlignment = .center
+        baseLabelComponent.textColor = UIColor.white
         return baseLabelComponent
     }()
     
@@ -46,6 +49,7 @@ class CastDetailViewController: UIViewController {
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.font = UIFont.systemFont(ofSize: 20)
         baseLabelComponent.textAlignment = .center
+        baseLabelComponent.textColor = UIColor.white
         return baseLabelComponent
     }()
     
@@ -54,6 +58,7 @@ class CastDetailViewController: UIViewController {
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.font = UIFont.systemFont(ofSize: 20)
         baseLabelComponent.textAlignment = .center
+        baseLabelComponent.textColor = UIColor.white
         return baseLabelComponent
     }()
     
@@ -65,7 +70,7 @@ class CastDetailViewController: UIViewController {
                                                        castGenderLabel,
                                                        castPopularityLabel])
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.spacing = 30
+        stackView.spacing = 10
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
@@ -81,7 +86,7 @@ class CastDetailViewController: UIViewController {
     }
     
     func setUp() {
-        navigationItem.title = "Cast Detail"
+        navigationItem.title = castDetailViewModel?.castDetailModel?.name
         view.addSubview(castImageView)
         view.addSubview(labelStackView)
         getData(castDetailViewModel?.castDetailModel)
@@ -98,7 +103,7 @@ class CastDetailViewController: UIViewController {
             castImageView.sd_setImage(with: imageUrl, completed: nil)
         }
         
-        castNameLabel.text = "Name:  \(movieCastModel?.name ?? "Unknown")"
+        castNameLabel.text = "\(movieCastModel?.name ?? "Unknown")"
         castCharacterLabel.text = "Character: \(movieCastModel?.character ?? "Unknown")"
         castKnownForDepartmentLabel.text = "Known for department: \(movieCastModel?.knownForDepartment ?? "Unknown")"
         castPopularityLabel.text = "Popularity: \(movieCastModel?.popularity ?? 0.0)"
@@ -117,9 +122,9 @@ class CastDetailViewController: UIViewController {
     func setupConstraints() {
         if #available(iOS 11.0, *) {
             NSLayoutConstraint.activate([
-                castImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
-                castImageView.widthAnchor.constraint(equalToConstant: 200),
-                castImageView.heightAnchor.constraint(equalToConstant: 200),
+                castImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+                castImageView.widthAnchor.constraint(equalToConstant: 250),
+                castImageView.heightAnchor.constraint(equalToConstant: 250),
                 castImageView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
                 
                 castNameLabel.widthAnchor.constraint(equalToConstant: 300),
@@ -129,12 +134,12 @@ class CastDetailViewController: UIViewController {
             ])
         } else {
             NSLayoutConstraint.activate([
-                castImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 15),
-                castImageView.widthAnchor.constraint(equalToConstant: 200),
-                castImageView.heightAnchor.constraint(equalToConstant: 200),
+                castImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+                castImageView.widthAnchor.constraint(equalToConstant: 250),
+                castImageView.heightAnchor.constraint(equalToConstant: 250),
                 castImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 
-                castNameLabel.widthAnchor.constraint(equalToConstant: 300),
+                castNameLabel.widthAnchor.constraint(equalToConstant: 350),
                 
                 labelStackView.topAnchor.constraint(equalTo: castImageView.bottomAnchor, constant: 20),
                 labelStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor)

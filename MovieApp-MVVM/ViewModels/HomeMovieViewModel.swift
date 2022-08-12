@@ -18,6 +18,7 @@ class HomeMovieViewModel {
     var movieModel: MovieModel?
     var movieList: [MovieModel] = []
     weak var delegate: HomeMovieViewModelDelegate?
+    var searchedMovieList: [MovieModel] = []
     
     init() {
         getData()

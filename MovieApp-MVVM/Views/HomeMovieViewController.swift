@@ -9,9 +9,48 @@ import UIKit
 import SDWebImage
 import SwiftUI
 
-class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HomeMovieViewModelDelegate {
-   
+class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HomeMovieViewModelDelegate, UISearchBarDelegate, UISearchResultsUpdating {
     
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        homeMovieViewModel.searchedMovieList.removeAll(keepingCapacity: false)
+        
+        if let searchTerm = searchController.searchBar.text {
+            let searchedArray = homeMovieViewModel.movieList.filter { result in
+                return (result.title?.lowercased().contains(searchTerm.lowercased()) ?? false)
+            }
+            homeMovieViewModel.searchedMovieList = searchedArray
+            if searchController.isBeingDismissed == false {
+                movieTableView.reloadData()
+            }
+        }
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        movieSearchController.searchBar.endEditing(true)
+        movieTableView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        movieSearchController.isActive = false
+        movieSearchController.searchBar.endEditing(true)
+        movieSearchController.searchBar.showsCancelButton = false
+        movieTableView.reloadData()
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        movieSearchController.isActive = false
+        movieSearchController.searchBar.showsCancelButton = true
+        
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        movieSearchController.isActive = true
+        movieSearchController.searchBar.showsCancelButton = true
+        movieTableView.reloadData()
+    }
+    
+
     lazy var movieTableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -33,6 +72,21 @@ class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableVie
         viewModel.delegate = self
         return viewModel
     }()
+    
+    lazy var movieSearchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchBar.delegate = self
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.sizeToFit()
+        searchController.searchBar.barStyle = UIBarStyle.black
+        searchController.searchBar.backgroundColor = UIColor.clear
+        searchController.searchBar.isTranslucent = true
+        searchController.searchBar.placeholder = "Search"
+        searchController.searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
+        searchController.searchBar.setValue("Cancel", forKey: "cancelButtonText")
+        return searchController
+        
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,15 +97,27 @@ class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableVie
     func setup() {
         navigationItem.title = "Movies App"
         
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red, NSAttributedString.Key.font: UIFont(name: "Futura Bold", size: 30)!]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red, NSAttributedString.Key.font: UIFont(name: "Futura Bold", size: 24)!]
         navigationController?.navigationBar.backgroundColor = .clear
         view.addSubview(movieTableView)
         view.addSubview(loaderActivtyIndicatorView)
         loaderActivtyIndicatorView.startAnimating()
         //print("setup called")
         setupConstraints()
+        setupSearchController()
+        
         
     }
+    
+    func setupSearchController() {
+           if #available(iOS 11.0, *) {
+               navigationItem.hidesSearchBarWhenScrolling = false
+               navigationItem.searchController = movieSearchController
+           } else {
+               movieSearchController.hidesNavigationBarDuringPresentation = false
+               navigationItem.titleView = movieSearchController.searchBar
+           }
+       }
     
     
     
@@ -78,15 +144,22 @@ class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableVie
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(homeMovieViewModel.movieList.count)
-        return homeMovieViewModel.movieList.count
+        if movieSearchController.isActive {
+            return homeMovieViewModel.searchedMovieList.count
+                } else {
+                    return homeMovieViewModel.movieList.count
+                }
       
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "HomeMovieTableViewCell") as? HomeMovieTableViewCell {
             
-            getCellData(with: homeMovieViewModel.movieList[indexPath.row], cell: cell)
+            if movieSearchController.isActive {
+                           getCellData(with: homeMovieViewModel.searchedMovieList[indexPath.row], cell: cell)
+                       } else {
+                           getCellData(with: homeMovieViewModel.movieList[indexPath.row], cell: cell)
+                       }
             return cell
         } else {
         
@@ -105,6 +178,7 @@ class HomeMovieViewController: UIViewController, UITableViewDelegate, UITableVie
         let movieDetailViewController = MovieDetailViewController()
         let movieDetailViewModel = MovieDetailViewModel(movieResults: homeMovieViewModel.movieResults[indexPath.row])
         movieDetailViewController.moviDetailViewModel = movieDetailViewModel
+        
         navigationController?.pushViewController(movieDetailViewController, animated: true)
     }
     

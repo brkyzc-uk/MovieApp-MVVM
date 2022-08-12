@@ -12,6 +12,8 @@ enum API: String {
     case movieResultUrl  = "popular?api_key=f506ec91a7f3deb9dcc4d3a6243eb20d"
     case movieImageUrl = "https://image.tmdb.org/t/p/original"
     case movieCreditsUrl = "/credits?api_key=f506ec91a7f3deb9dcc4d3a6243eb20d"
+    case movieSearchUrl = "https://api.themoviedb.org/3/search/multi?api_key=f506ec91a7f3deb9dcc4d3a6243eb20d&query="
+    
 }
 
 class APIUrl {
@@ -27,5 +29,9 @@ class APIUrl {
     
     func getMovieDetailUrl(with movieId: Int) -> String {
         return "\(API.movieBaseUrl.rawValue)\(movieId)\(API.movieCreditsUrl.rawValue)"
+    }
+    
+    func getMovieSearchUrl(with query: String) -> String {
+        return API.movieSearchUrl.rawValue + query
     }
 }

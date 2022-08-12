@@ -23,6 +23,7 @@ struct MovieResults: Decodable {
     let title: String?
     let overview: String?
     let posterPath: String?
+    let backdropPath: String?
     let releaseDate: String?
     let voteAverage: Double?
     let popularity: Double?
@@ -33,6 +34,7 @@ struct MovieResults: Decodable {
         case overview
         case popularity
         case posterPath = "poster_path"
+        case backdropPath = "backdrop_path"
         case releaseDate = "release_date"
         case voteAverage = "vote_average"
     }

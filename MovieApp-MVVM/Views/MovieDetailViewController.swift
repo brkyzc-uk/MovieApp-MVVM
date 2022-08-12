@@ -29,10 +29,10 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     lazy var coverImageView: BaseImageViewComponent = {
         
-        let imageView = BaseImageViewComponent(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-        imageView.layer.cornerRadius = imageView.frame.size.width / 10
+        let imageView = BaseImageViewComponent(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 500))
         return imageView
     }()
+    
     
     lazy var ratingLabel: BaseLabelComponent = {
         
@@ -46,13 +46,16 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     lazy var releaseDateLabel: BaseLabelComponent = {
         let baseLabelComponent = BaseLabelComponent()
         baseLabelComponent.textAlignment = .center
+        baseLabelComponent.textColor = UIColor.lightGray
         return baseLabelComponent
     }()
     
     lazy var summaryLabel: BaseLabelComponent = {
         
         let baseLabelComponent = BaseLabelComponent()
-        baseLabelComponent.font = UIFont.systemFont(ofSize: 14)
+        baseLabelComponent.font = UIFont.systemFont(ofSize: 18)
+        baseLabelComponent.textAlignment = .justified
+        baseLabelComponent.textColor = UIColor.white
         return baseLabelComponent
     }()
     
@@ -70,7 +73,7 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(MovieDetailCollectionViewCell.self, forCellWithReuseIdentifier: "MovieDetailCollectionViewCell")
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = UIColor.darkGray
+        collectionView.backgroundColor = .clear
         collectionView.backgroundView = UIView.init(frame: .zero)
         return collectionView
         
@@ -85,24 +88,23 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         // Do any additional setup after loading the view.
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
-    }
     
     override func viewDidLayoutSubviews() {
         resizeScroll()
     }
     
+   
+    
     func resizeScroll() {
-        let height = titleLabel.frame.size.height + ratingLabel.frame.size.height + releaseDateLabel.frame.size.height + summaryLabel.frame.size.height + 300
+        let height = coverImageView.frame.size.height + titleLabel.frame.size.height + ratingLabel.frame.size.height + releaseDateLabel.frame.size.height + summaryLabel.frame.size.height + castCollectionView.frame.size.height + 100
         mainScrollView.contentSize = CGSize(width: view.frame.size.width, height: height)
     }
     
     func setUp() {
-        navigationItem.title = "Movie Detail"
+        navigationItem.title = moviDetailViewModel?.movieResults?.title
         moviDetailViewModel?.delegate = self
-        mainScrollView.addSubview(titleLabel)
         mainScrollView.addSubview(coverImageView)
+        mainScrollView.addSubview(titleLabel)
         mainScrollView.addSubview(ratingLabel)
         mainScrollView.addSubview(releaseDateLabel)
         mainScrollView.addSubview(summaryLabel)
@@ -113,14 +115,14 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func getDataFrom(_ movieResult: MovieResults?) {
-        if let title = movieResult?.title, let imageUrl = URL(string: API.movieImageUrl.rawValue + (movieResult?.posterPath ?? "")), let releaseDate = movieResult?.releaseDate, let summary = movieResult?.overview {
+        if let title = movieResult?.title, let imageUrl = URL(string: API.movieImageUrl.rawValue + (movieResult?.backdropPath ?? "")), let releaseDate = movieResult?.releaseDate, let summary = movieResult?.overview {
             titleLabel.text = title
             coverImageView.sd_imageIndicator = SDWebImageActivityIndicator.grayLarge
             coverImageView.sd_setImage(with: imageUrl, completed: nil)
             releaseDateLabel.text = "Release Date: \(releaseDate)"
             ratingLabel.text = "Rate: \(movieResult?.voteAverage ?? 0.0)"
             summaryLabel.text = summary
-            print("works")
+
 
         } else {
             titleLabel.text = "Undefined"
@@ -219,27 +221,29 @@ class MovieDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func setupConstraints() {
          NSLayoutConstraint.activate([
-             titleLabel.topAnchor.constraint(equalTo: mainScrollView.topAnchor, constant: 15),
-             titleLabel.widthAnchor.constraint(equalToConstant: 350),
-             titleLabel.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
              
-             coverImageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-             coverImageView.heightAnchor.constraint(equalToConstant: 200),
-             coverImageView.widthAnchor.constraint(equalToConstant: 100),
+             coverImageView.topAnchor.constraint(equalTo: mainScrollView.topAnchor, constant: 5),
+             coverImageView.heightAnchor.constraint(equalToConstant: view.frame.width / 1.4),
+             coverImageView.widthAnchor.constraint(equalToConstant: view.frame.width),
              coverImageView.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
              
-             releaseDateLabel.topAnchor.constraint(equalTo: coverImageView.bottomAnchor, constant: 15),
+             titleLabel.topAnchor.constraint(equalTo: coverImageView.bottomAnchor, constant: 5),
+             titleLabel.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
+             titleLabel.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
+             
+             
+             releaseDateLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
              releaseDateLabel.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
              
-             ratingLabel.topAnchor.constraint(equalTo: releaseDateLabel.bottomAnchor, constant: 15),
+             ratingLabel.topAnchor.constraint(equalTo: releaseDateLabel.bottomAnchor, constant: 5),
              ratingLabel.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
              
              summaryLabel.topAnchor.constraint(equalTo: ratingLabel.bottomAnchor, constant: 15),
-             summaryLabel.widthAnchor.constraint(equalToConstant: 300),
+             summaryLabel.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
              summaryLabel.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
              
              castCollectionView.topAnchor.constraint(equalTo: summaryLabel.bottomAnchor, constant: 5),
-             castCollectionView.heightAnchor.constraint(equalToConstant: 250),
+             castCollectionView.heightAnchor.constraint(equalToConstant: 300),
              castCollectionView.widthAnchor.constraint(equalToConstant: view.frame.width),
              castCollectionView.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
              

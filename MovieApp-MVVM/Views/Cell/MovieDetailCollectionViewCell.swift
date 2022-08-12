@@ -30,6 +30,7 @@ class MovieDetailCollectionViewCell: UICollectionViewCell {
         let label = BaseLabelComponent()
         label.font = UIFont.systemFont(ofSize: 14.0)
         label.textColor = .lightGray
+        label.textAlignment = .center
         return label
     }()
     
